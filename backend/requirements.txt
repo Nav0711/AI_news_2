@@ -1,0 +1,19 @@
+requests==2.31.0
+pymongo[srv]==4.6.0        # <-- [srv] is the only change here
+python-dotenv==1.0.0
+beautifulsoup4==4.12.2
+apscheduler==3.10.4
+tqdm==4.66.1
+yfinance==0.2.36
+dnspython==2.4.2           # <-- needed for SRV DNS resolution
+
+# Phase 2 — Personalized Recommendation Engine
+sentence-transformers==2.7.0
+faiss-cpu==1.8.0
+fastapi==0.111.0
+uvicorn==0.29.0
+numpy==1.26.4
+
+
+# Phase 3 — Google Gemini API
+google-generativeai==0.5.4
