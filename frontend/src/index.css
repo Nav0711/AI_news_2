@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 7%;
+    --foreground: 40 10% 85%;
+
+    --card: 220 18% 10%;
+    --card-foreground: 40 10% 85%;
+
+    --popover: 220 18% 10%;
+    --popover-foreground: 40 10% 85%;
+
+    --primary: 40 90% 55%;
+    --primary-foreground: 220 20% 7%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 40 10% 75%;
+
+    --muted: 220 12% 14%;
+    --muted-foreground: 220 10% 50%;
+
+    --accent: 40 90% 55%;
+    --accent-foreground: 220 20% 7%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 40 90% 55%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 220 20% 8%;
+    --sidebar-foreground: 40 10% 75%;
+    --sidebar-primary: 40 90% 55%;
+    --sidebar-primary-foreground: 220 20% 7%;
+    --sidebar-accent: 220 15% 13%;
+    --sidebar-accent-foreground: 40 10% 85%;
+    --sidebar-border: 220 15% 16%;
+    --sidebar-ring: 40 90% 55%;
+
+    --gold: 40 90% 55%;
+    --gold-dim: 40 60% 40%;
+    --green: 145 60% 45%;
+    --red: 0 70% 55%;
+    --surface-elevated: 220 18% 12%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .font-mono-jet {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+  .text-gold-dim {
+    color: hsl(var(--gold-dim));
+  }
+  .bg-surface-elevated {
+    background-color: hsl(var(--surface-elevated));
+  }
+  .text-positive {
+    color: hsl(var(--green));
+  }
+  .text-negative {
+    color: hsl(var(--red));
+  }
+  .border-gold {
+    border-color: hsl(var(--gold));
+  }
+  .bg-gold {
+    background-color: hsl(var(--gold));
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 2px;
+  }
+}
