@@ -6,6 +6,8 @@
 
 **Total Setup Time:** 15-20 minutes
 
+*** Use the backend_startup.sh ***
+
 ---
 
 ## 📋 What's Included
