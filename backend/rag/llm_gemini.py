@@ -97,7 +97,7 @@ def ask(question: str, category_filter: str = None) -> dict:
             "question": question,
             "answer": "No articles available for this query.",
             "articles_used": 0,
-            "model": "gemini-1.5-flash"
+            "model": "gemini-2.0-flash"
         }
     
     # Build prompt
@@ -112,14 +112,14 @@ Please provide a comprehensive answer based on the articles above."""
     
     try:
         # Call Gemini
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         response = model.generate_content(prompt)
         
         return {
             "question": question,
             "answer": response.text,
             "articles_used": article_count,
-            "model": "gemini-1.5-flash"
+            "model": "gemini-2.0-flash"
         }
     except Exception as e:
         raise RuntimeError(f"Gemini API error: {str(e)}")
@@ -164,7 +164,7 @@ Please provide a comprehensive answer based on the articles above."""
     
     try:
         # Call Gemini with streaming
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         response = model.generate_content(prompt, stream=True)
         
         for chunk in response:
@@ -178,21 +178,43 @@ Please provide a comprehensive answer based on the articles above."""
 # 4. check_gemini() -> bool
 # ─────────────────────────────────────────────────────────────────────────
 
+import time
+from typing import Dict, Any
+
+_gemini_health_cache: Dict[str, Any] = {
+    "status": False,
+    "last_checked": 0.0
+}
+
 def check_gemini() -> bool:
     """
     Check if Gemini API is available and working.
+    Caches the result for 60 seconds to prevent rate limiting.
     
     Returns:
         True if API key is valid, False otherwise
     """
     if not GEMINI_API_KEY:
         return False
+        
+    current_time = time.time()
+    
+    # Return cached value if within 60 seconds
+    if current_time - _gemini_health_cache["last_checked"] < 60:
+        return _gemini_health_cache["status"]
     
     try:
         # Try a minimal API call
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content("Say 'ok'", timeout=5)
-        return response is not None and response.text
+        model = genai.GenerativeModel("gemini-2.0-flash")
+        response = model.generate_content("Say 'ok'")
+        is_healthy = response is not None and response.text is not None
+        
+        _gemini_health_cache["status"] = is_healthy
+        _gemini_health_cache["last_checked"] = current_time
+        
+        return is_healthy
     except Exception as e:
         print(f"Gemini health check failed: {e}")
+        _gemini_health_cache["status"] = False
+        _gemini_health_cache["last_checked"] = current_time
         return False

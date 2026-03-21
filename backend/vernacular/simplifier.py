@@ -44,7 +44,7 @@ def simplify_article(title: str, content: str) -> dict:
         raise RuntimeError("GEMINI_API_KEY not set")
     
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         
         prompt = f"""{SIMPLIFICATION_PROMPT}
 
@@ -82,7 +82,7 @@ def stream_simplify_article(title: str, content: str):
         return
     
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         
         prompt = f"""{SIMPLIFICATION_PROMPT}
 

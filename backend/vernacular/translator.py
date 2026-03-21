@@ -95,7 +95,7 @@ def translate_article(content: str, language_code: str, title: str = "Business N
     lang_info = SUPPORTED_LANGUAGES[language_code]
     
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         
         prompt = TRANSLATION_PROMPT_TEMPLATE.replace("{LANGUAGE_NAME}", lang_info["name"])
         prompt += f"\n\nORIGINAL ARTICLE:\nTitle: {title}\nContent: {content[:2000]}"
@@ -137,7 +137,7 @@ def stream_translate_article(content: str, language_code: str, title: str = "Bus
     lang_info = SUPPORTED_LANGUAGES[language_code]
     
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         
         prompt = TRANSLATION_PROMPT_TEMPLATE.replace("{LANGUAGE_NAME}", lang_info["name"])
         prompt += f"\n\nORIGINAL ARTICLE:\nTitle: {title}\nContent: {content[:2000]}"

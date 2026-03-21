@@ -27,6 +27,15 @@ export interface HealthStatus {
   model: string;
 }
 
+export interface MarketStat {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  change_percent: number;
+  updated_at: string;
+}
+
 export async function fetchFeed(interests: string[], readIds: string[] = [], topK = 20): Promise<Article[]> {
   const res = await fetch(`${API_BASE}/feed`, {
     method: "POST",
@@ -101,4 +110,26 @@ export async function* streamTranslation(title: string, content: string, languag
     if (done) break;
     yield decoder.decode(value, { stream: true });
   }
+}
+export async function fetchMarketStats(): Promise<MarketStat[]> {
+  const res = await fetch(`${API_BASE}/market-stats`);
+  if (!res.ok) throw new Error("Failed to fetch market stats");
+  return res.json();
+}
+
+export async function fetchStoryArc(): Promise<Record<string, any[]>> {
+  const res = await fetch(`${API_BASE}/story-arc`);
+  if (!res.ok) throw new Error("Failed to fetch story arc");
+  return res.json();
+}
+
+export async function generateVideoSummary(articleId: string, title: string, content: string): Promise<string> {
+  const res = await fetch(`${API_BASE}/video-summary`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ article_id: articleId, title, content }),
+  });
+  if (!res.ok) throw new Error("Video generation failed");
+  const data = await res.json();
+  return `${API_BASE}${data.video_url}`;
 }

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchInterests, fetchHealth, type HealthStatus } from "@/lib/api";
 
 interface SidebarProps {
@@ -8,18 +9,20 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ selectedInterests, onToggleInterest, articleCounts }: SidebarProps) {
-  const [interests, setInterests] = useState<string[]>([]);
-  const [health, setHealth] = useState<HealthStatus | null>(null);
   const [trendingTopics] = useState([
     "#RBI", "#Budget2026", "#SEBI", "#Adani", "#Infosys", "#FinTech",
   ]);
 
-  useEffect(() => {
-    fetchInterests().then(setInterests).catch(() => {
-      setInterests(["Stocks & Equity", "Macro Economy", "Startup & VC", "Corporate", "Crypto & Web3", "Real Estate"]);
-    });
-    fetchHealth().then(setHealth).catch(() => null);
-  }, []);
+  const { data: interests = ["Stocks & Equity", "Macro Economy", "Startup & VC", "Corporate", "Crypto & Web3", "Real Estate"] } = useQuery({
+    queryKey: ["interests"],
+    queryFn: fetchInterests,
+  });
+
+  const { data: health = null } = useQuery({
+    queryKey: ["health"],
+    queryFn: fetchHealth,
+    refetchInterval: 60000, // Check health every 60 seconds instead of aggressively
+  });
 
   return (
     <aside className="w-72 border-r border-border flex flex-col h-full overflow-y-auto scrollbar-thin">

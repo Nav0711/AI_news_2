@@ -189,7 +189,7 @@ curl -X POST http://localhost:8000/briefing \
   "question": "...",
   "answer": "Based on recent articles: ...",
   "articles_used": 45,
-  "model": "gemini-1.5-flash"
+  "model": "gemini-2.0-flash"
 }
 ```
 
@@ -268,7 +268,7 @@ curl http://localhost:8000/health | python3 -m json.tool
   "faiss_articles": 326,
   "gemini": true,
   "vernacular": true,
-  "model": "gemini-1.5-flash"
+  "model": "gemini-2.0-flash"
 }
 ```
 

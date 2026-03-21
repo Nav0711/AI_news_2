@@ -3,14 +3,20 @@ import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
 import FeedPanel from "@/components/FeedPanel";
 import AIBriefingPanel from "@/components/AIBriefingPanel";
+import StoryArcPanel from "@/components/StoryArcPanel";
+import { useQuery } from "@tanstack/react-query";
 import { fetchFeed, type Article } from "@/lib/api";
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState("FEED");
   const [selectedInterests, setSelectedInterests] = useState<string[]>(["Stocks & Equity", "Macro Economy"]);
-  const [articles, setArticles] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [loading, setLoading] = useState(false);
+
+  const { data: articles = [], isLoading: loading } = useQuery({
+    queryKey: ["feed", selectedInterests],
+    queryFn: () => fetchFeed(selectedInterests),
+    enabled: selectedInterests.length > 0,
+  });
 
   const articleCounts: Record<string, number> = {};
   articles.forEach((a) => {
@@ -19,25 +25,7 @@ export default function Index() {
     }
   });
 
-  const loadFeed = useCallback(async () => {
-    if (selectedInterests.length === 0) {
-      setArticles([]);
-      return;
-    }
-    setLoading(true);
-    try {
-      const data = await fetchFeed(selectedInterests);
-      setArticles(data);
-    } catch {
-      // API not available — show empty state
-      setArticles([]);
-    }
-    setLoading(false);
-  }, [selectedInterests]);
 
-  useEffect(() => {
-    loadFeed();
-  }, [loadFeed]);
 
   function toggleInterest(interest: string) {
     setSelectedInterests((prev) =>
@@ -54,12 +42,16 @@ export default function Index() {
           onToggleInterest={toggleInterest}
           articleCounts={articleCounts}
         />
-        <FeedPanel
-          articles={articles}
-          selectedArticle={selectedArticle}
-          onSelectArticle={setSelectedArticle}
-          loading={loading}
-        />
+        {activeTab === "STORY ARC" ? (
+          <StoryArcPanel />
+        ) : (
+          <FeedPanel
+            articles={articles}
+            selectedArticle={selectedArticle}
+            onSelectArticle={setSelectedArticle}
+            loading={loading}
+          />
+        )}
         <AIBriefingPanel selectedArticle={selectedArticle} />
       </div>
     </div>

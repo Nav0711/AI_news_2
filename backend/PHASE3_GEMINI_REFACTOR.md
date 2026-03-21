@@ -106,7 +106,7 @@ CONTENT: Indian AI startups have raised...
   "question": "What is happening with AI startups?",
   "answer": "Based on recent articles:...",
   "articles_used": 42,
-  "model": "gemini-1.5-flash"
+  "model": "gemini-2.0-flash"
 }
 ```
 
@@ -145,7 +145,7 @@ for token in stream_ask("Your question"):
   "question": "What is the market impact...",
   "answer": "• RBI raised rates by 25bps\n• Banking stocks gained 2-3%\n...",
   "articles_used": 45,
-  "model": "gemini-1.5-flash"
+  "model": "gemini-2.0-flash"
 }
 ```
 
@@ -182,7 +182,7 @@ for token in stream_ask("Your question"):
   "status": "ok",
   "faiss_articles": 326,
   "gemini": true,
-  "model": "gemini-1.5-flash"
+  "model": "gemini-2.0-flash"
 }
 ```
 
@@ -261,7 +261,7 @@ curl http://localhost:8000/health | python3 -m json.tool
   "status": "ok",
   "faiss_articles": 326,
   "gemini": true,
-  "model": "gemini-1.5-flash"
+  "model": "gemini-2.0-flash"
 }
 ```
 

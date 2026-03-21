@@ -137,7 +137,7 @@ def _add_context(title: str, content: str, language_code: str) -> str:
         lang_info = SUPPORTED_LANGUAGES.get(language_code, {})
         lang_name = lang_info.get("name", "English")
         
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-2.0-flash")
         
         prompt = CONTEXT_PROMPT.replace("{LANGUAGE_NAME}", lang_name)
         prompt += f"\n\nARTICLE:\nTitle: {title}\nContent: {content[:1500]}"
@@ -158,19 +158,39 @@ def get_all_languages() -> list:
     return list(get_supported_languages().values())
 
 
+import time
+from typing import Dict, Any
+
+_vernacular_cache: Dict[str, Any] = {
+    "status": False,
+    "last_checked": 0.0
+}
+
 def check_vernacular_api() -> bool:
     """
     Check if Gemini API is available for Phase 5.
+    Caches the result for 60 seconds.
     
     Returns:
         True if API working, False otherwise
     """
     if not GEMINI_API_KEY:
         return False
+        
+    current_time = time.time()
+    
+    if current_time - _vernacular_cache["last_checked"] < 60:
+        return _vernacular_cache["status"]
     
     try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content("Say 'ok' in one word only", timeout=5)
-        return response is not None and response.text
+        model = genai.GenerativeModel("gemini-2.0-flash")
+        response = model.generate_content("Say 'ok' in one word only")
+        is_working = response is not None and response.text is not None
+        
+        _vernacular_cache["status"] = is_working
+        _vernacular_cache["last_checked"] = current_time
+        return is_working
     except Exception:
+        _vernacular_cache["status"] = False
+        _vernacular_cache["last_checked"] = current_time
         return False

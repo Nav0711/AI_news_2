@@ -1,5 +1,8 @@
 
 
+import { useQuery } from "@tanstack/react-query";
+import { fetchMarketStats } from "@/lib/api";
+
 interface NavbarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
@@ -7,13 +10,14 @@ interface NavbarProps {
 
 const tabs = ["FEED", "STORY ARC", "BRIEFING"];
 
-const marketData = [
-  { label: "SENSEX", value: "73,847", change: "+0.43%", positive: true },
-  { label: "NIFTY", value: "22,402", change: "-0.12%", positive: false },
-  { label: "₹/USD", value: "83.47", change: "-0.08%", positive: false },
-];
+
 
 export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
+  const { data: marketStats, isLoading } = useQuery({
+    queryKey: ["marketStats"],
+    queryFn: fetchMarketStats,
+    refetchInterval: 15 * 60 * 1000, // 15 mins
+  });
   return (
     <nav className="flex items-center gap-1 px-6 py-3 border-b border-border bg-background/95 backdrop-blur-sm sticky top-0 z-50">
       <h1 className="font-display text-xl tracking-tight mr-6">
@@ -38,13 +42,19 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
       </div>
 
       <div className="ml-auto flex items-center gap-5 font-mono-jet text-[11px]">
-        {marketData.map((m) => (
-          <span key={m.label} className="flex items-center gap-1.5">
-            <span className="text-muted-foreground">{m.label}</span>
-            <span className="text-foreground">{m.value}</span>
-            <span className={m.positive ? "text-positive" : "text-negative"}>{m.change}</span>
-          </span>
-        ))}
+        {isLoading ? (
+          <span className="text-muted-foreground animate-pulse">Loading markets...</span>
+        ) : (
+          marketStats?.map((m) => (
+            <span key={m.symbol} className="flex items-center gap-1.5">
+              <span className="text-muted-foreground">{m.name}</span>
+              <span className="text-foreground">{m.price.toLocaleString()}</span>
+              <span className={m.change >= 0 ? "text-positive" : "text-negative"}>
+                {m.change >= 0 ? "+" : ""}{m.change_percent.toFixed(2)}%
+              </span>
+            </span>
+          ))
+        )}
       </div>
     </nav>
   );
