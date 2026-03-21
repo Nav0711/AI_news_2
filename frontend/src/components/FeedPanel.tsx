@@ -17,8 +17,9 @@ export default function FeedPanel({ articles, selectedArticle, onSelectArticle, 
   });
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden">
-      {/* Header */}
+    <div className="flex-1 flex flex-row h-full overflow-hidden bg-black/20">
+      <div className="flex-1 max-w-[800px] flex flex-col h-full border-r border-white/5">
+        {/* Header */}
       <div className="px-8 pt-8 pb-4 flex items-start justify-between">
         <div>
           <h2 className="font-display text-4xl leading-[1.1] tracking-tight">
@@ -36,7 +37,7 @@ export default function FeedPanel({ articles, selectedArticle, onSelectArticle, 
       </div>
 
       {/* Articles */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-8 pb-8">
+      <div className="flex-1 overflow-y-auto scrollbar-none px-6 pb-8">
         {loading ? (
           <div className="space-y-3 mt-4">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -53,10 +54,10 @@ export default function FeedPanel({ articles, selectedArticle, onSelectArticle, 
               <button
                 key={article.id}
                 onClick={() => onSelectArticle(article)}
-                className={`w-full text-left p-4 rounded-lg border transition-all duration-200 active:scale-[0.99] animate-fade-in ${
+                className={`w-full text-left p-5 rounded-xl border border-white/5 bg-zinc-900/40 backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-red-900/10 active:scale-[0.99] animate-fade-in ${
                   selectedArticle?.id === article.id
-                    ? "border-gold/40 bg-gold/5"
-                    : "border-border hover:border-foreground/10 hover:bg-muted/30"
+                    ? "border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.15)]"
+                    : "hover:border-white/20 hover:bg-zinc-800/50"
                 }`}
                 style={{ animationDelay: `${i * 40}ms` }}
               >
@@ -81,6 +82,37 @@ export default function FeedPanel({ articles, selectedArticle, onSelectArticle, 
             ))}
           </div>
         )}
+      </div>
+    </div>
+
+      {/* Right Rail (Twitter-like) */}
+      <div className="hidden xl:flex w-[350px] flex-col p-8 gap-8 border-l border-white/5 bg-black/10">
+        <div className="p-5 rounded-2xl bg-zinc-900/50 border border-white/5">
+          <h4 className="font-mono-jet text-[10px] tracking-[0.2em] text-muted-foreground mb-4 uppercase">Trending Topics</h4>
+          <div className="space-y-4">
+            {["#Budget2026", "#RBI", "#StockMarket", "#TechInd", "#Startups"].map((tag) => (
+              <div key={tag} className="group cursor-pointer">
+                <div className="text-[11px] text-muted-foreground">Trending in India</div>
+                <div className="text-sm font-semibold group-hover:text-gold transition-colors">{tag}</div>
+                <div className="text-[10px] text-muted-foreground">1.2K Articles</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-zinc-900/50 border border-white/5">
+          <h4 className="font-mono-jet text-[10px] tracking-[0.2em] text-muted-foreground mb-4 uppercase">Market Pulse</h4>
+          <div className="space-y-3">
+             <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">Sensex</span>
+                <span className="text-positive font-mono-jet">+0.43%</span>
+             </div>
+             <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">Nifty 50</span>
+                <span className="text-negative font-mono-jet">-0.12%</span>
+             </div>
+          </div>
+        </div>
       </div>
     </div>
   );

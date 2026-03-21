@@ -28,7 +28,7 @@ export default function StoryArcPanel() {
   const clusters = timeline ? Object.keys(timeline) : [];
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-background">
+    <div className="flex-1 flex flex-col h-full overflow-hidden border-l border-white/5 bg-black/20 relative">
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-display text-4xl leading-[1.1] tracking-tight">
           Story <em className="text-gold italic">Arc</em>

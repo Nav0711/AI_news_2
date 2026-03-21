@@ -121,7 +121,7 @@ export default function AIBriefingPanel({ selectedArticle }: AIBriefingPanelProp
   }
 
   return (
-    <aside className="w-[420px] border-l border-border flex flex-col h-full relative">
+    <div className="flex-1 flex flex-col h-full overflow-hidden border-l border-white/5 bg-black/20 relative">
       {/* Header */}
       <div className="px-5 pt-5 pb-3 border-b border-border">
         <div className="flex items-center justify-between">
@@ -271,6 +271,6 @@ export default function AIBriefingPanel({ selectedArticle }: AIBriefingPanelProp
       {videoUrl && (
         <VideoPlayer videoUrl={videoUrl} onClose={() => setVideoUrl(null)} />
       )}
-    </aside>
+    </div>
   );
 }

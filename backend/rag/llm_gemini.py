@@ -28,7 +28,7 @@ If the articles don't contain enough information, say so clearly. Never hallucin
 # 1. fetch_articles_for_context(limit=100) -> str
 # ─────────────────────────────────────────────────────────────────────────
 
-def fetch_articles_for_context(limit: int = 100, category_filter: str = None) -> tuple[str, int]:
+def fetch_articles_for_context(limit: int = 5, category_filter: str = None) -> tuple[str, int]:
     """
     Fetch recent articles from MongoDB and format as context string for Gemini.
     
@@ -89,8 +89,22 @@ def ask(question: str, category_filter: str = None) -> dict:
     if not GEMINI_API_KEY:
         raise RuntimeError("GEMINI_API_KEY not set. Add to .env file.")
     
-    # Fetch articles
-    context, article_count = fetch_articles_for_context(limit=100, category_filter=category_filter)
+    # 1. Check Cache first
+    db = get_db()
+    cache_coll = db["ai_briefing_cache"]
+    # Simple cache key: question + category
+    cache_key = f"{question}_{category_filter or 'all'}"
+    cached = cache_coll.find_one({"key": cache_key})
+    if cached:
+        return {
+            "question": question,
+            "answer": cached["answer"],
+            "articles_used": cached.get("articles_used", 0),
+            "model": "cached"
+        }
+
+    # Fetch articles - limited to 5 for prototype efficiency
+    context, article_count = fetch_articles_for_context(limit=5, category_filter=category_filter)
     
     if not context:
         return {
@@ -111,9 +125,25 @@ USER QUESTION: {question}
 Please provide a comprehensive answer based on the articles above."""
     
     try:
-        # Call Gemini
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        # Call Gemini with token limits
+        generation_config = {
+            "max_output_tokens": 512,
+            "temperature": 0.7,
+        }
+        model = genai.GenerativeModel("gemini-2.0-flash", generation_config=generation_config)
         response = model.generate_content(prompt)
+        
+        # Save to cache
+        cache_coll.update_one(
+            {"key": cache_key},
+            {"$set": {
+                "key": cache_key,
+                "answer": response.text,
+                "articles_used": article_count,
+                "timestamp": time.time()
+            }},
+            upsert=True
+        )
         
         return {
             "question": question,
@@ -122,6 +152,15 @@ Please provide a comprehensive answer based on the articles above."""
             "model": "gemini-2.0-flash"
         }
     except Exception as e:
+        # Ptototype Mock Fallback if Quota hit
+        error_msg = str(e)
+        if "429" in error_msg or "quota" in error_msg.lower():
+            return {
+                "question": question,
+                "answer": f"Prototype Note: Gemini Quota Exceeded. \n\nBriefing Summary (Mock):\nThis article discusses key shifts in the Indian business landscape. The key highlights include increased domestic capital flow and strategic expansions by major players. Expected market impact: Positive long-term sentiment.",
+                "articles_used": article_count,
+                "model": "mock-fallback"
+            }
         raise RuntimeError(f"Gemini API error: {str(e)}")
 
 
@@ -145,8 +184,17 @@ def stream_ask(question: str, category_filter: str = None) -> Generator[str, Non
         yield "ERROR: GEMINI_API_KEY not set. Add to .env file."
         return
     
-    # Fetch articles
-    context, article_count = fetch_articles_for_context(limit=100, category_filter=category_filter)
+    # Check Cache first (Streaming mode doesn't cache as easily, but we'll check if a full answer exists)
+    db = get_db()
+    cache_coll = db["ai_briefing_cache"]
+    cache_key = f"{question}_{category_filter or 'all'}"
+    cached = cache_coll.find_one({"key": cache_key})
+    if cached:
+        yield cached["answer"]
+        return
+
+    # Fetch articles - limited to 5 for prototype efficiency
+    context, article_count = fetch_articles_for_context(limit=5, category_filter=category_filter)
     
     if not context:
         yield "No articles available for this query."
@@ -163,14 +211,41 @@ USER QUESTION: {question}
 Please provide a comprehensive answer based on the articles above."""
     
     try:
-        # Call Gemini with streaming
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        # Call Gemini with streaming and limits
+        generation_config = {
+            "max_output_tokens": 512,
+            "temperature": 0.7,
+        }
+        model = genai.GenerativeModel("gemini-2.0-flash", generation_config=generation_config)
         response = model.generate_content(prompt, stream=True)
         
+        full_text = ""
         for chunk in response:
             if chunk.text:
+                full_text += chunk.text
                 yield chunk.text
+        
+        # Cache the full response afterward
+        if full_text:
+            cache_coll.update_one(
+                {"key": cache_key},
+                {"$set": {
+                    "key": cache_key,
+                    "answer": full_text,
+                    "articles_used": article_count,
+                    "timestamp": time.time()
+                }},
+                upsert=True
+            )
     except Exception as e:
+        error_msg = str(e)
+        if "429" in error_msg or "quota" in error_msg.lower():
+            yield "Prototype Note: Gemini Quota Exceeded. Returning Mock Briefing...\n\n"
+            yield f"Summary for: {question}\n\n"
+            yield "- Key Highlights: Domestic venture capital is scaling up rapidly.\n"
+            yield "- Market Impact: Neutral to Positive as local funds replace global exits.\n"
+            yield "- Watch next: Further regulatory updates from SEBI and RBI."
+            return
         yield f"ERROR: {str(e)}"
 
 

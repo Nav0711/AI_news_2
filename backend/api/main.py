@@ -14,6 +14,8 @@ from data_pipeline.utils.db import get_db
 from api.news_stats import get_market_stats
 import os
 from video.generator import create_video_summary
+from data_pipeline.utils.user_db import setup_user_indexes
+from api.auth import router as auth_router
 
 # ── Update lifespan to include Phase 3 startup ────────────────────────────
 @asynccontextmanager
@@ -25,6 +27,9 @@ async def lifespan(app: FastAPI):
     print("Building FAISS index from 326 articles...")
     build_index()
     print("  ✓ Phase 2: Article embeddings & FAISS ready")
+    
+    # Setup Auth Indexes
+    setup_user_indexes()
     
     # Check Gemini connection
     if not check_gemini():
@@ -58,6 +63,9 @@ STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
 os.makedirs(os.path.join(STATIC_DIR, "videos"), exist_ok=True)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# Auth Router
+app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
 
 # ──────────────────────────────────────────────────────────────────────────
 # PHASE 2: RECOMMENDATION ENGINE
