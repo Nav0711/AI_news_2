@@ -25,7 +25,7 @@ export default function Sidebar({ selectedInterests, onToggleInterest, articleCo
   });
 
   return (
-    <aside className="w-72 border-r border-border flex flex-col h-full overflow-y-auto scrollbar-thin">
+    <aside className="w-72 border-r border-border flex flex-col h-full overflow-y-auto scrollbar-thin bg-card/50">
       <div className="p-5 flex-1">
         <h2 className="text-[10px] font-mono-jet tracking-[0.2em] text-muted-foreground mb-4">YOUR INTERESTS</h2>
         <ul className="space-y-1">
@@ -38,19 +38,19 @@ export default function Sidebar({ selectedInterests, onToggleInterest, articleCo
                 onClick={() => onToggleInterest(interest)}
                 className={`flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 active:scale-[0.97] animate-fade-in ${
                   selected
-                    ? "border border-gold/40 bg-gold/5"
+                    ? "border border-primary/40 bg-primary/5"
                     : "hover:bg-muted/50"
                 }`}
                 style={{ animationDelay: `${i * 60}ms` }}
               >
                 <span className="flex items-center gap-2.5">
-                  <span className={`w-1.5 h-1.5 rounded-full ${selected ? "bg-gold" : "bg-muted-foreground/40"}`} />
-                  <span className={`text-sm ${selected ? "text-gold font-medium" : "text-secondary-foreground"}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${selected ? "bg-primary" : "bg-muted-foreground/40"}`} />
+                  <span className={`text-sm ${selected ? "text-primary font-medium" : "text-secondary-foreground"}`}>
                     {interest}
                   </span>
                 </span>
                 {count > 0 && (
-                  <span className={`text-xs font-mono-jet ${selected ? "text-gold" : "text-muted-foreground"}`}>
+                  <span className={`text-xs font-mono-jet ${selected ? "text-primary" : "text-muted-foreground"}`}>
                     {count}
                   </span>
                 )}

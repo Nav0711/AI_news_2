@@ -121,7 +121,7 @@ export default function AIBriefingPanel({ selectedArticle }: AIBriefingPanelProp
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden border-l border-white/5 bg-black/20 relative">
+    <div className="flex-1 flex flex-col h-full overflow-hidden border-l border-border bg-card/50 relative">
       {/* Header */}
       <div className="px-5 pt-5 pb-3 border-b border-border">
         <div className="flex items-center justify-between">
@@ -161,17 +161,17 @@ export default function AIBriefingPanel({ selectedArticle }: AIBriefingPanelProp
             <p className="text-sm font-medium mb-4 text-foreground">{selectedArticle.title}</p>
             <div className="text-sm leading-relaxed text-secondary-foreground whitespace-pre-wrap">
               {briefing}
-              {isStreaming && <span className="inline-block w-1.5 h-4 bg-gold animate-pulse ml-0.5" />}
+              {isStreaming && <span className="inline-block w-1.5 h-4 bg-primary animate-pulse ml-0.5" />}
             </div>
             {translation && (
               <div className="mt-4 pt-4 border-t border-border animate-fade-in">
                 <h4 className="text-[10px] font-mono-jet tracking-[0.2em] text-muted-foreground mb-2 flex items-center gap-2">
                   TRANSLATION
-                  <span className="text-xs font-sans text-gold">({languages.find(l => l.code === selectedLang)?.native})</span>
+                  <span className="text-xs font-sans text-primary">({languages.find(l => l.code === selectedLang)?.native})</span>
                 </h4>
                 <div className="text-sm leading-relaxed text-secondary-foreground whitespace-pre-wrap">
                   {translation}
-                  {isTranslating && <span className="inline-block w-1.5 h-4 bg-gold animate-pulse ml-0.5" />}
+                  {isTranslating && <span className="inline-block w-1.5 h-4 bg-primary animate-pulse ml-0.5" />}
                 </div>
               </div>
             )}
@@ -210,7 +210,7 @@ export default function AIBriefingPanel({ selectedArticle }: AIBriefingPanelProp
             onClick={() => handleTranslate("en")}
             disabled={!selectedArticle || isTranslating}
             className={`px-3 py-1 rounded-full text-xs font-medium transition-all active:scale-95 flex-shrink-0 ${
-              selectedLang === "en" ? "bg-gold text-background" : "border border-border text-muted-foreground hover:text-foreground"
+              selectedLang === "en" ? "bg-primary text-primary-foreground" : "border border-border text-muted-foreground hover:text-foreground"
             }`}
           >
             English
@@ -222,7 +222,7 @@ export default function AIBriefingPanel({ selectedArticle }: AIBriefingPanelProp
               disabled={!selectedArticle || isTranslating}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-all active:scale-95 flex-shrink-0 ${
                 selectedLang === lang.code
-                  ? "bg-gold text-background"
+                  ? "bg-primary text-primary-foreground"
                   : "border border-border text-muted-foreground hover:text-foreground"
               }`}
             >

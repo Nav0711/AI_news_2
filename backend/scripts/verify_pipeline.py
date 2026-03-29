@@ -6,7 +6,7 @@ def run_checks():
     col = db["articles"]
 
     total = col.count_documents({})
-    print(f"\n=== NewsET Data Quality Report ===")
+    print(f"\n=== MyET Data Quality Report ===")
     print(f"Total articles: {total}")
 
     if total == 0:

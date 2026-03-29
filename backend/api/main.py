@@ -1,4 +1,4 @@
-# api/main.py — NewsET API with Phase 2 (Recommendations) & Phase 3 (RAG)
+# api/main.py — MyET API with Phase 2 (Recommendations) & Phase 3 (RAG)
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.responses import StreamingResponse
@@ -20,7 +20,7 @@ from api.auth import router as auth_router
 # ── Update lifespan to include Phase 3 startup ────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Starting up NewsET API...")
+    print("Starting up MyET API...")
     
     # Phase 2: Building recommendation FAISS index
     embed_pending_articles()
@@ -33,17 +33,17 @@ async def lifespan(app: FastAPI):
     
     # Check Gemini connection
     if not check_gemini():
-        print("  ⚠ WARNING: Gemini API key missing or invalid. Check .env GEMINI_API_KEY")
+        print("  ⚠ WARNING: Gemini API quota exceeded or key invalid. Deep-Translator/Mock fallbacks active.")
         
     if not check_vernacular_api():
-        print("  ⚠ WARNING: Vernacular API not available. Check Gemini API key.")
+        print("  ⚠ WARNING: Vernacular API status unknown.")
         
     print("✓ API ready on http://localhost:8000")
     yield
     print("Shutting down...")
 
 app = FastAPI(
-    title="NewsET API",
+    title="MyET API",
     description="Backend for AI-Native News Experience",
     version="1.0.0",
     lifespan=lifespan

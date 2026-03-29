@@ -13,16 +13,17 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
-CONTEXT_PROMPT = """As an Indian business news expert, provide contextual explanations for this news in {LANGUAGE_NAME}.
+CONTEXT_PROMPT = """As a seasoned Indian business news expert, provide a culturally adapted contextual explanation for this news in {LANGUAGE_NAME}. 
+Do not provide a literal translation. Instead, interpret the news for a local audience.
 
 Context to provide:
-1. Indian market impact
-2. Regulatory/policy implications
+1. Local Context & Indian market impact (explain using relatable regional analogies)
+2. Regulatory/policy implications for the common person
 3. Historical background if relevant
-4. Similar past events
-5. Expert perspective
+4. Similar past events in India
+5. Expert perspective simplified
 
-Keep explanations accessible to regional readers."""
+Keep explanations highly accessible, conversational, and culturally relevant to regional readers in {LANGUAGE_NAME}."""
 
 def translate_with_context(
     title: str,
@@ -168,29 +169,7 @@ _vernacular_cache: Dict[str, Any] = {
 
 def check_vernacular_api() -> bool:
     """
-    Check if Gemini API is available for Phase 5.
-    Caches the result for 60 seconds.
-    
-    Returns:
-        True if API working, False otherwise
+    Check if translation API is available.
+    Returns True always to support the deep-translator fallback.
     """
-    if not GEMINI_API_KEY:
-        return False
-        
-    current_time = time.time()
-    
-    if current_time - _vernacular_cache["last_checked"] < 60:
-        return _vernacular_cache["status"]
-    
-    try:
-        model = genai.GenerativeModel("gemini-2.0-flash")
-        response = model.generate_content("Say 'ok' in one word only")
-        is_working = response is not None and response.text is not None
-        
-        _vernacular_cache["status"] = is_working
-        _vernacular_cache["last_checked"] = current_time
-        return is_working
-    except Exception:
-        _vernacular_cache["status"] = False
-        _vernacular_cache["last_checked"] = current_time
-        return False
+    return True

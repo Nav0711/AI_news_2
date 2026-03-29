@@ -1,45 +1,39 @@
 import yfinance as yf
 from datetime import datetime
-from requests_cache import CachedSession
-from requests_ratelimiter import LimiterSession
+import warnings
+
+# Suppress yfinance warnings to keep console clean
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 # Market indices for Indian business news
 INDICES = {
     "^BSESN": "SENSEX",
-    "^NSEI": "NIFTY 50",
-    "BTC-USD": "Bitcoin",
-    "USDINR=X": "USD/INR"
+    "^NSEI": "NIFTY 50"
 }
 
-# Simplified limiter that doesn't rely on RequestRate if it's missing in some library versions
-# requests-ratelimiter usually handles it internally or with Limiter
-session = LimiterSession(per_second=2)
-session = CachedSession(
-    'market_cache', 
-    session=session, 
-    expire_after=300, # 5 minutes
-    allowable_methods=['GET', 'POST']
-)
-# Add browser-like headers to avoid bot detection
-session.headers.update({
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Origin': 'https://finance.yahoo.com',
-    'Referer': 'https://finance.yahoo.com/'
-})
+import sys
+import os
 
 def get_market_stats():
     """
     Fetch real-time market stats for top indices.
     """
     stats = []
-    # yfinance 0.2.36 might still have issues, but session can help
     for symbol, name in INDICES.items():
         try:
-            ticker = yf.Ticker(symbol, session=session)
-            # Try history instead of fast_info as it's more reliable but slower
-            data = ticker.history(period="2d")
+            # We don't use the custom LimiterSession as it causes JSONDecodeErrors with yfinance
+            original_stdout = sys.stdout
+            original_stderr = sys.stderr
+            sys.stdout = open(os.devnull, 'w')
+            sys.stderr = open(os.devnull, 'w')
+            try:
+                ticker = yf.Ticker(symbol)
+                data = ticker.history(period="2d")
+            finally:
+                sys.stdout.close()
+                sys.stderr.close()
+                sys.stdout = original_stdout
+                sys.stderr = original_stderr
             
             if not data.empty:
                 last_row = data.iloc[-1]

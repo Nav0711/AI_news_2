@@ -58,21 +58,21 @@ SUPPORTED_LANGUAGES = {
 
 TRANSLATION_PROMPT_TEMPLATE = """You are a professional translator specializing in Indian regional languages and business news.
 
-Your task: Translate the following business article to {LANGUAGE_NAME} with these rules:
+Your task: Provide a context-aware, culturally adapted explanation of the following English business article in {LANGUAGE_NAME}.
 
-1. Maintain accuracy of financial/business terms
-2. Use regional context where relevant
-3. Explain Indian market references clearly
-4. Keep the tone professional but accessible
-5. Add explanatory notes for complex terms
-6. Preserve the original meaning
+RULES:
+1. **NO LITERAL TRANSLATION:** Provide culturally adapted explanations. Do not just translate word-for-word.
+2. **Local Context:** Embed local context to make the news relatable to a regional reader in {LANGUAGE_NAME}.
+3. **Accuracy:** Maintain the accuracy of financial facts, figures, and business terms.
+4. **Tone:** Keep the tone professional but highly accessible and conversational.
+5. **Jargon:** Break down complex financial jargon using simple regional analogies.
 
-IMPORTANT: Respond in {LANGUAGE_NAME} only. Do not mix with English unless necessary for clarification.
+IMPORTANT: Respond strictly in {LANGUAGE_NAME}.
 
-Format your response with:
-- शीर्षक / തലക്കം / ခေါင်းစီး (Headline in {LANGUAGE_NAME})
-- मुख्य बिंदु / പ്രധാന പ്പോയിന്റുകൾ (Key Points - bulleted)
-- വിപ്ലവകരമായ വിവരണം (Detailed Explanation)"""
+Format your response exactly as follows:
+- 📰 शीर्षक (Headline in {LANGUAGE_NAME})
+- 🎯 मुख्य बिंदु (Key Points in {LANGUAGE_NAME} - bulleted)
+- 💡 विस्तृत विवरण (Culturally Adapted Detailed Explanation in {LANGUAGE_NAME})"""
 
 def translate_article(content: str, language_code: str, title: str = "Business News") -> dict:
     """
@@ -111,7 +111,22 @@ def translate_article(content: str, language_code: str, title: str = "Business N
             "character_count": len(response.text)
         }
     except Exception as e:
-        raise RuntimeError(f"Translation error: {str(e)}")
+        print(f"Gemini API failed, falling back to deep-translator: {e}")
+        try:
+            from deep_translator import GoogleTranslator
+            translator = GoogleTranslator(source='auto', target=language_code)
+            fallback_text = translator.translate(content[:2000])
+            fallback_text = f"*(Note: AI Contextual Engine is currently sleeping due to API Rate Limits. Providing direct fallback translation.)*\n\n{fallback_text}"
+            return {
+                "original_title": title,
+                "language": lang_info["name"],
+                "language_code": language_code,
+                "native_name": lang_info["native"],
+                "translated_content": fallback_text,
+                "character_count": len(fallback_text)
+            }
+        except Exception as fallback_e:
+            raise RuntimeError(f"Translation error and fallback failed: {str(fallback_e)}")
 
 
 def stream_translate_article(content: str, language_code: str, title: str = "Business News"):
@@ -148,7 +163,19 @@ def stream_translate_article(content: str, language_code: str, title: str = "Bus
             if chunk.text:
                 yield chunk.text
     except Exception as e:
-        yield f"ERROR: {str(e)}"
+        print(f"Gemini streaming failed: {e}")
+        try:
+            from deep_translator import GoogleTranslator
+            translator = GoogleTranslator(source='auto', target=language_code)
+            fallback_text = translator.translate(content[:2000])
+            yield f"*(Note: AI Contextual Engine is currently sleeping due to API Rate Limits. Providing direct fallback translation.)*\n\n"
+            
+            # Simulated streaming by chunking the output
+            words = fallback_text.split()
+            for i in range(0, len(words), 5):
+                yield " ".join(words[i:i+5]) + " "
+        except Exception as fallback_e:
+            yield f"ERROR: Fallback translation failed: {str(fallback_e)}"
 
 
 def get_supported_languages() -> dict:

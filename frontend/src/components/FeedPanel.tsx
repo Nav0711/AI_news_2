@@ -17,13 +17,13 @@ export default function FeedPanel({ articles, selectedArticle, onSelectArticle, 
   });
 
   return (
-    <div className="flex-1 flex flex-row h-full overflow-hidden bg-black/20">
-      <div className="flex-1 max-w-[800px] flex flex-col h-full border-r border-white/5">
+    <div className="flex-1 flex flex-row h-full overflow-hidden bg-transparent">
+      <div className="flex-1 max-w-[800px] flex flex-col h-full border-r border-border">
         {/* Header */}
       <div className="px-8 pt-8 pb-4 flex items-start justify-between">
         <div>
           <h2 className="font-display text-4xl leading-[1.1] tracking-tight">
-            Your <em className="text-gold italic">personalised</em>
+            Your <em className="text-primary italic">personalised</em>
             <br />briefing
           </h2>
           <p className="text-sm text-muted-foreground mt-2">
@@ -54,10 +54,10 @@ export default function FeedPanel({ articles, selectedArticle, onSelectArticle, 
               <button
                 key={article.id}
                 onClick={() => onSelectArticle(article)}
-                className={`w-full text-left p-5 rounded-xl border border-white/5 bg-zinc-900/40 backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-red-900/10 active:scale-[0.99] animate-fade-in ${
+                className={`w-full text-left p-5 rounded-xl border bg-card backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 active:scale-[0.99] animate-fade-in ${
                   selectedArticle?.id === article.id
-                    ? "border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.15)]"
-                    : "hover:border-white/20 hover:bg-zinc-800/50"
+                    ? "border-primary/50 bg-primary/5 shadow-sm shadow-primary/20"
+                    : "border-border hover:border-primary/30 hover:bg-muted/80"
                 }`}
                 style={{ animationDelay: `${i * 40}ms` }}
               >
@@ -75,7 +75,7 @@ export default function FeedPanel({ articles, selectedArticle, onSelectArticle, 
                     </div>
                   </div>
                   <div className="flex-shrink-0 text-right">
-                    <span className="text-[10px] font-mono-jet text-gold">{(article.relevance_score * 100).toFixed(0)}%</span>
+                    <span className="text-[10px] font-mono-jet text-primary">{(article.relevance_score * 100).toFixed(0)}%</span>
                   </div>
                 </div>
               </button>
@@ -86,21 +86,21 @@ export default function FeedPanel({ articles, selectedArticle, onSelectArticle, 
     </div>
 
       {/* Right Rail (Twitter-like) */}
-      <div className="hidden xl:flex w-[350px] flex-col p-8 gap-8 border-l border-white/5 bg-black/10">
-        <div className="p-5 rounded-2xl bg-zinc-900/50 border border-white/5">
+      <div className="hidden xl:flex w-[350px] flex-col p-8 gap-8 border-l border-border bg-transparent">
+        <div className="p-5 rounded-2xl bg-card border border-border shadow-sm">
           <h4 className="font-mono-jet text-[10px] tracking-[0.2em] text-muted-foreground mb-4 uppercase">Trending Topics</h4>
           <div className="space-y-4">
             {["#Budget2026", "#RBI", "#StockMarket", "#TechInd", "#Startups"].map((tag) => (
               <div key={tag} className="group cursor-pointer">
                 <div className="text-[11px] text-muted-foreground">Trending in India</div>
-                <div className="text-sm font-semibold group-hover:text-gold transition-colors">{tag}</div>
+                <div className="text-sm font-semibold group-hover:text-primary transition-colors">{tag}</div>
                 <div className="text-[10px] text-muted-foreground">1.2K Articles</div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-zinc-900/50 border border-white/5">
+        <div className="p-5 rounded-2xl bg-card border border-border shadow-sm">
           <h4 className="font-mono-jet text-[10px] tracking-[0.2em] text-muted-foreground mb-4 uppercase">Market Pulse</h4>
           <div className="space-y-3">
              <div className="flex justify-between items-center text-sm">

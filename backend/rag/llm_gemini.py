@@ -14,7 +14,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
-SYSTEM_PROMPT = """You are NewsET, an AI business news analyst specializing in Indian markets.
+SYSTEM_PROMPT = """You are MyET, an AI business news analyst specializing in Indian markets.
 You have been given a set of recent news articles as context.
 Answer the user's question using ONLY information from these articles.
 Be structured, concise, and always mention the source name when citing facts.
@@ -289,7 +289,12 @@ def check_gemini() -> bool:
         
         return is_healthy
     except Exception as e:
-        print(f"Gemini health check failed: {e}")
+        error_msg = str(e)
+        if "429" in error_msg or "quota" in error_msg.lower():
+            pass # Suppress rate limit giant blocks since fallback is configured
+        else:
+            print(f"Gemini check issue: {error_msg.splitlines()[0]}")
+            
         _gemini_health_cache["status"] = False
         _gemini_health_cache["last_checked"] = current_time
         return False

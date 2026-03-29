@@ -49,7 +49,7 @@ export default function Index() {
           onToggleInterest={toggleInterest}
           articleCounts={articleCounts}
         />
-        <div className="flex-1 flex bg-black/40 overflow-hidden relative">
+        <div className="flex-1 flex bg-muted/20 overflow-hidden relative">
           {activeTab === "STORY ARC" && <StoryArcPanel />}
           {activeTab === "FEED" && (
             <FeedPanel

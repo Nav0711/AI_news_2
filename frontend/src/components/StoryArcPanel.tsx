@@ -28,10 +28,10 @@ export default function StoryArcPanel() {
   const clusters = timeline ? Object.keys(timeline) : [];
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden border-l border-white/5 bg-black/20 relative">
+    <div className="flex-1 flex flex-col h-full overflow-hidden border-l border-border bg-card/50 relative">
       <div className="px-8 pt-8 pb-4">
         <h2 className="font-display text-4xl leading-[1.1] tracking-tight">
-          Story <em className="text-gold italic">Arc</em>
+          Story <em className="text-primary italic">Arc</em>
           <br />Tracker
         </h2>
         <p className="text-sm text-muted-foreground mt-2">
@@ -43,13 +43,13 @@ export default function StoryArcPanel() {
         <div className="space-y-16 mt-8">
           {clusters.map((clusterId) => (
             <div key={clusterId} className="space-y-6">
-              <h3 className="font-mono-jet text-xs tracking-widest text-gold uppercase">
+              <h3 className="font-mono-jet text-xs tracking-widest text-primary uppercase">
                 Cluster #{clusterId}
               </h3>
               <div className="space-y-8 relative pl-8 border-l border-gold/20">
                 {timeline[clusterId].map((event, idx) => (
                   <div key={idx} className="relative animate-fade-in" style={{ animationDelay: `${idx * 100}ms` }}>
-                    <div className="absolute -left-[33px] top-1 w-2.5 h-2.5 rounded-full bg-gold shadow-[0_0_8px_rgba(212,175,55,0.5)]" />
+                    <div className="absolute -left-[33px] top-1 w-2.5 h-2.5 rounded-full bg-primary shadow-sm shadow-primary/50" />
                     <div className="text-[10px] font-mono-jet text-muted-foreground mb-1 uppercase">
                       {new Date(event.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                     </div>

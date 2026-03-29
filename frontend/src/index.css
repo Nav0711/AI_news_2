@@ -6,6 +6,53 @@
 
 @layer base {
   :root {
+    --background: 0 0% 98%;
+    --foreground: 220 20% 7%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 7%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 7%;
+
+    --primary: 15 100% 55%; /* Rich Saffron */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 135 70% 35%; /* Deep Indian Green */
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 15% 95%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 15 100% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 15 100% 55%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 20% 7%;
+    --sidebar-primary: 15 100% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 95%;
+    --sidebar-accent-foreground: 220 20% 7%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 15 100% 55%;
+
+    --gold: 15 100% 55%;
+    --gold-dim: 15 90% 45%;
+    --green: 135 70% 35%;
+    --red: 0 84% 50%;
+    --surface-elevated: 0 0% 100%;
+  }
+
+  .dark {
     --background: 220 20% 7%;
     --foreground: 40 10% 85%;
 
@@ -15,40 +62,38 @@
     --popover: 220 18% 10%;
     --popover-foreground: 40 10% 85%;
 
-    --primary: 40 90% 55%;
-    --primary-foreground: 220 20% 7%;
+    --primary: 15 100% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 15% 15%;
-    --secondary-foreground: 40 10% 75%;
+    --secondary: 135 60% 45%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 220 12% 14%;
     --muted-foreground: 220 10% 50%;
 
-    --accent: 40 90% 55%;
-    --accent-foreground: 220 20% 7%;
+    --accent: 15 100% 60%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 15% 18%;
     --input: 220 15% 18%;
-    --ring: 40 90% 55%;
-
-    --radius: 0.5rem;
+    --ring: 15 100% 60%;
 
     --sidebar-background: 220 20% 8%;
     --sidebar-foreground: 40 10% 75%;
-    --sidebar-primary: 40 90% 55%;
-    --sidebar-primary-foreground: 220 20% 7%;
+    --sidebar-primary: 15 100% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 15% 13%;
     --sidebar-accent-foreground: 40 10% 85%;
     --sidebar-border: 220 15% 16%;
-    --sidebar-ring: 40 90% 55%;
+    --sidebar-ring: 15 100% 60%;
 
-    --gold: 40 90% 55%;
-    --gold-dim: 40 60% 40%;
+    --gold: 15 100% 60%;
+    --gold-dim: 15 90% 45%;
     --green: 145 60% 45%;
-    --red: 0 70% 55%;
+    --red: 0 84% 60%;
     --surface-elevated: 220 18% 12%;
   }
 }

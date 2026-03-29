@@ -54,8 +54,8 @@ def generate_background_image(title: str, output_path: str):
         draw.text(((width - w) / 2, y_text), line, font=font, fill=(212, 175, 55)) # Gold color
         y_text += 80
         
-    # Draw NewsET logo
-    draw.text((80, 80), "NewsET", fill=(255, 255, 255), font=font)
+    # Draw MyET logo
+    draw.text((80, 80), "MyET", fill=(255, 255, 255), font=font)
     
     img.save(output_path)
 

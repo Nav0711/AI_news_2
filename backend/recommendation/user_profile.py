@@ -4,7 +4,7 @@ from sentence_transformers import SentenceTransformer
 from recommendation.embedder import get_model
 
 # Predefined interest categories → seed phrases for embedding
-# These are tuned for the 4 NewsET user segments from the PRD
+# These are tuned for the 4 MyET user segments from the PRD
 INTEREST_SEEDS = {
     "stocks":        "NSE BSE stock market equity mutual funds SIP SEBI",
     "startup":       "startup funding venture capital Series A founder unicorn",
